@@ -44,7 +44,21 @@
 
         public bool HasSection(string section)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(section))
+            {
+                throw new ArgumentNullException("section");
+            }
+
+            string[] sections = Sections();
+            foreach (string s in sections)
+            {
+                if (s.Equals(section, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public string[] Options(string section)

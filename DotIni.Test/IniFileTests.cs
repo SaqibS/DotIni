@@ -19,5 +19,19 @@
                 Assert.AreEqual("Section" + (i + 1), sections[i]);
             }
         }
+
+        [TestMethod]
+        public void HasSectionFindsSection()
+        {
+            IniFile file = new IniFile("test.ini");
+            Assert.AreEqual(true, file.HasSection("section1"));
+        }
+
+        [TestMethod]
+        public void HasSectionDoesntFindNonexistentSection()
+        {
+            IniFile file = new IniFile("test.ini");
+            Assert.AreEqual(false, file.HasSection("section0"));
+        }
     }
 }
