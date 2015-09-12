@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.InteropServices;
 
     public class IniFile
     {
@@ -20,12 +21,25 @@
                 throw new FileNotFoundException("The specified file was not found.", filename);
             }
 
-            this.filename = filename;
+            this.filename = Path.GetFullPath(filename);
         }
 
         public string[] Sections()
         {
-            throw new NotImplementedException();
+            const int BufferSize = 32 * 1024;
+            IntPtr buffer = Marshal.AllocCoTaskMem(BufferSize);
+            uint bytesReturned = NativeMethods.GetPrivateProfileSectionNames(buffer, BufferSize, filename);
+            if (bytesReturned == 0)
+            {
+                Marshal.FreeCoTaskMem(buffer);
+                return null;
+            }
+
+            string returnedString = Marshal.PtrToStringAuto(buffer, (int)bytesReturned).ToString();
+            Marshal.FreeCoTaskMem(buffer);
+
+            string[] sections = returnedString.Split(new char[] { '\0' }, StringSplitOptions.RemoveEmptyEntries);
+            return sections;
         }
 
         public bool HasSection(string section)
