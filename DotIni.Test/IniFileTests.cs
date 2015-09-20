@@ -14,7 +14,7 @@
             IniFile file = new IniFile("test.ini");
             string[] sections = file.Sections();
             Assert.IsNotNull(sections);
-            Assert.AreEqual(3, sections.Length);
+            Assert.AreEqual(4, sections.Length);
             for (int i = 0; i < sections.Length; i++)
             {
                 Assert.AreEqual("Section" + (i + 1), sections[i]);
@@ -96,7 +96,56 @@
         public void HasOptionDoesntFindOptionInNonexistentSection()
         {
             IniFile file = new IniFile("test.ini");
-            Assert.AreEqual(false, file.HasOption("Section4", "Option4"));
+            Assert.AreEqual(false, file.HasOption("Section0", "Option0"));
+        }
+
+        [TestMethod]
+        public void StringIsReadCorrectly()
+        {
+            IniFile file = new IniFile("test.ini");
+Assert.AreEqual("Hello", file.Get("Section4", "Text"));
+        }
+
+        [TestMethod]
+        public void IntIsReadCorrectly()
+        {
+            IniFile file = new IniFile("test.ini");
+Assert.AreEqual(7, file.GetInt("Section4", "Number"));
+        }
+
+        [TestMethod]
+        public void LongIsReadCorrectly()
+        {
+            IniFile file = new IniFile("test.ini");
+Assert.AreEqual(7l, file.GetLong("Section4", "Number"));
+        }
+
+        [TestMethod]
+        public void FloatIsReadCorrectly()
+        {
+            IniFile file = new IniFile("test.ini");
+Assert.AreEqual(3.14f, file.GetFloat("Section4", "Pi"));
+        }
+
+        [TestMethod]
+        public void DoubleIsReadCorrectly()
+        {
+            IniFile file = new IniFile("test.ini");
+Assert.AreEqual(3.14d, file.GetDouble("Section4", "Pi"));
+        }
+
+        [TestMethod]
+        public void BoolIsReadCorrectly()
+        {
+            IniFile file = new IniFile("test.ini");
+Assert.AreEqual(true, file.GetBoolean("Section4", "Positive"));
+        }
+
+        [TestMethod]
+        public void DefaultStringIsReadCorrectly()
+        {
+            IniFile file = new IniFile("test.ini");
+            Assert.AreEqual(string.Empty, file.Get("Section4", "Doesn't exist"));
         }
     }
 }
