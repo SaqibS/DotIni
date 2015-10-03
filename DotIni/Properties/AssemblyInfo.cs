@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("DotIni")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A .Net library for working with .ini files")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Saqib Shaikh")]
 [assembly: AssemblyProduct("DotIni")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright ©  2015, Saqib Shaikh")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

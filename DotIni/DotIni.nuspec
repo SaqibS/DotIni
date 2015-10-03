@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://opensource.org/licenses/mit-license</licenseUrl>
+    <projectUrl>http://github.com/SaqibS/DotIni</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Initial version.</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>ini config windows</tags>
+  </metadata>
+  <files>
+    <file src="..\readme.txt" />
+    <file src="..\license.txt" />
+  </files>
+</package>
