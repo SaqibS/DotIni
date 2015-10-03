@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using DotIni;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.IO;
 
     [TestClass]
     public class IniFileTests
@@ -74,8 +75,17 @@
         public void OptionsAreNotReadForNonexistentSection()
         {
             IniFile file = new IniFile("test.ini");
-            string[] options = file.Options("section0");
-            Assert.IsNull(options);
+            bool threwException = false;
+            try
+            {
+                string[] options = file.Options("section0");
+            }
+            catch (ArgumentException)
+            {
+                threwException = true;
+            }
+
+            Assert.IsTrue(threwException);
         }
 
         [TestMethod]
@@ -103,42 +113,42 @@
         public void StringIsReadCorrectly()
         {
             IniFile file = new IniFile("test.ini");
-Assert.AreEqual("Hello", file.Get("Section4", "Text"));
+            Assert.AreEqual("Hello", file.Get("Section4", "Text"));
         }
 
         [TestMethod]
         public void IntIsReadCorrectly()
         {
             IniFile file = new IniFile("test.ini");
-Assert.AreEqual(7, file.GetInt("Section4", "Number"));
+            Assert.AreEqual(7, file.GetInt("Section4", "Number"));
         }
 
         [TestMethod]
         public void LongIsReadCorrectly()
         {
             IniFile file = new IniFile("test.ini");
-Assert.AreEqual(7l, file.GetLong("Section4", "Number"));
+            Assert.AreEqual(7L, file.GetLong("Section4", "Number"));
         }
 
         [TestMethod]
         public void FloatIsReadCorrectly()
         {
             IniFile file = new IniFile("test.ini");
-Assert.AreEqual(3.14f, file.GetFloat("Section4", "Pi"));
+            Assert.AreEqual(3.14F, file.GetFloat("Section4", "Pi"));
         }
 
         [TestMethod]
         public void DoubleIsReadCorrectly()
         {
             IniFile file = new IniFile("test.ini");
-Assert.AreEqual(3.14d, file.GetDouble("Section4", "Pi"));
+            Assert.AreEqual(3.14D, file.GetDouble("Section4", "Pi"));
         }
 
         [TestMethod]
         public void BoolIsReadCorrectly()
         {
             IniFile file = new IniFile("test.ini");
-Assert.AreEqual(true, file.GetBoolean("Section4", "Positive"));
+            Assert.AreEqual(true, file.GetBoolean("Section4", "Positive"));
         }
 
         [TestMethod]
@@ -146,6 +156,61 @@ Assert.AreEqual(true, file.GetBoolean("Section4", "Positive"));
         {
             IniFile file = new IniFile("test.ini");
             Assert.AreEqual(string.Empty, file.Get("Section4", "Doesn't exist"));
+        }
+
+        [TestMethod]
+        public void OptionIsSavedCorrectly()
+        {
+            string filename = Path.GetTempFileName();
+            var file = new IniFile(filename);
+            file.Set("Section1", "Option1", "Value1");
+            Assert.AreEqual("Value1", file.Get("Section1", "Option1"));
+            File.Delete(filename);
+        }
+
+        [TestMethod]
+        public void OptionIsChangedCorrectly()
+        {
+            string filename = Path.GetTempFileName();
+            var file = new IniFile(filename);
+            file.Set("Section1", "Option1", "Value1");
+            file.Set("Section1", "Option1", "Value2");
+            Assert.AreEqual("Value2", file.Get("Section1", "Option1"));
+            File.Delete(filename);
+        }
+
+        [TestMethod]
+        public void NumberIsSavedCorrectly()
+        {
+            string filename = Path.GetTempFileName();
+            var file = new IniFile(filename);
+            file.Set("Section1", "Option1", 3.14);
+            Assert.AreEqual(3.14, file.GetDouble("Section1", "Option1"));
+            File.Delete(filename);
+        }
+
+        [TestMethod]
+        public void OptionCanBeRemoved()
+        {
+            string filename = Path.GetTempFileName();
+            var file = new IniFile(filename);
+            file.Set("Section1", "Option1", "Value1");
+            Assert.AreEqual(1, file.Options("Section1").Length);
+            file.RemoveOption("Section1", "Option1");
+            Assert.AreEqual(0, file.Options("Section1").Length);
+            File.Delete(filename);
+        }
+
+        [TestMethod]
+        public void SectionCanBeRemoved()
+        {
+            string filename = Path.GetTempFileName();
+            var file = new IniFile(filename);
+            file.Set("Section1", "Option1", "Value1");
+            Assert.AreEqual(1, file.Sections().Length);
+            file.RemoveSection("Section1");
+            Assert.AreEqual(0, file.Sections().Length);
+            File.Delete(filename);
         }
     }
 }

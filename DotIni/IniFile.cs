@@ -34,7 +34,7 @@
                 uint bytesReturned = NativeMethods.GetPrivateProfileSectionNames(buffer, BufferSize, filename);
                 if (bytesReturned == 0)
                 {
-                    return null;
+                    return new string[0];
                 }
 
                 string[] sections = SplitNullDelimitedBuffer(buffer, (int)bytesReturned);
@@ -77,13 +77,18 @@
                 throw new ArgumentNullException("section");
             }
 
+            if (!HasSection(section))
+            {
+                throw new ArgumentException("Section does not exist.");
+            }
+
             IntPtr buffer = Marshal.AllocCoTaskMem(BufferSize);
             try
             {
                 uint bytesReturned = NativeMethods.GetPrivateProfileString(section, null, null, buffer, BufferSize, filename);
                 if (bytesReturned == 0)
                 {
-                    return null;
+                    return new string[0];
                 }
 
                 string[] options = SplitNullDelimitedBuffer(buffer, (int)bytesReturned);
@@ -107,7 +112,16 @@
                 throw new ArgumentNullException("option");
             }
 
-            string[] options = Options(section);
+            string[] options;
+            try
+            {
+                options = Options(section);
+            }
+            catch
+            {
+                return false;
+            }
+
             if (options == null)
             {
                 return false;
@@ -221,6 +235,11 @@
 
         public KeyValuePair<string, string>[] Items(string section)
         {
+            if (string.IsNullOrEmpty(section))
+            {
+                throw new ArgumentNullException("section");
+            }
+
             IntPtr buffer = Marshal.AllocCoTaskMem(BufferSize);
             try
             {
@@ -248,19 +267,52 @@
             }
         }
 
-        public void Set(string section, string option, object value)
+        public bool Set(string section, string option, object value)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(section))
+            {
+                throw new ArgumentNullException("section");
+            }
+
+            if (string.IsNullOrEmpty("option"))
+            {
+                throw new ArgumentNullException("option");
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException("value");
+            }
+
+            bool result = NativeMethods.WritePrivateProfileString(section, option, value.ToString(), filename);
+            return result;
         }
 
-        public void RemoveOption(string section, string option)
+        public bool RemoveOption(string section, string option)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(section))
+            {
+                throw new ArgumentNullException("section");
+            }
+
+            if (string.IsNullOrEmpty("option"))
+            {
+                throw new ArgumentNullException("option");
+            }
+
+            bool result = NativeMethods.WritePrivateProfileString(section, option, null, filename);
+            return result;
         }
 
-        public void RemoveSection(string section)
+        public bool RemoveSection(string section)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(section))
+            {
+                throw new ArgumentNullException("section");
+            }
+
+            bool result = NativeMethods.WritePrivateProfileString(section, null, null, filename);
+            return result;
         }
 
         private static string[] SplitNullDelimitedBuffer(IntPtr buffer, int length)
