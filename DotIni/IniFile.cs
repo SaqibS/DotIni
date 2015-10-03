@@ -5,12 +5,15 @@
     using System.IO;
     using System.Runtime.InteropServices;
 
+    /// <summary>Provides methods for reading from, and writing to, .ini files.</summary>
     public class IniFile
     {
         private const int BufferSize = 32 * 1024;
 
         private string filename;
 
+        /// <summary>Initializes a new instance of the <see cref="IniFile" /> class.</summary>
+        /// <param name="filename">The path of the .ini file.</param>
         public IniFile(string filename)
         {
             if (string.IsNullOrEmpty(filename))
@@ -26,6 +29,8 @@
             this.filename = Path.GetFullPath(filename);
         }
 
+        /// <summary>Retrieves the sections in the file.</summary>
+        /// <returns>An array containing the section names.</returns>
         public string[] Sections()
         {
             IntPtr buffer = Marshal.AllocCoTaskMem(BufferSize);
@@ -46,6 +51,9 @@
             }
         }
 
+        /// <summary>Determines whether the specified section exists in this .ini file.</summary>
+        /// <param name="section">The section to look for.</param>
+        /// <returns><c>true</c> if the specified section was found, <c>false</c> otherwise.</returns>
         public bool HasSection(string section)
         {
             if (string.IsNullOrEmpty(section))
@@ -70,6 +78,9 @@
             return false;
         }
 
+        /// <summary>Retrieves a list of options in the specified section.</summary>
+        /// <param name="section">The section for which to retrieve the options.</param>
+        /// <returns>An array containing the option names.</returns>
         public string[] Options(string section)
         {
             if (string.IsNullOrEmpty(section))
@@ -100,6 +111,10 @@
             }
         }
 
+        /// <summary>Determines whether the specified option exists in the specified section.</summary>
+        /// <param name="section">The section which the option is in.</param>
+        /// <param name="option">The option to look for.</param>
+        /// <returns><c>true</c> if the specified option was found, <c>false</c> otherwise.</returns>
         public bool HasOption(string section, string option)
         {
             if (string.IsNullOrEmpty(section))
@@ -138,6 +153,11 @@
             return false;
         }
 
+        /// <summary>Gets a value from the .ini file.</summary>
+        /// <param name="section">The section that the option is in.</param>
+        /// <param name="option">The option to read.</param>
+        /// <param name="defaultValue">The default value (defaults to <c>string.Empty</c> if not specified).</param>
+        /// <returns>The value from the .ini file if it could be found, or else the default value.</returns>
         public string Get(string section, string option, string defaultValue = "")
         {
             if (string.IsNullOrEmpty(section))
@@ -168,6 +188,11 @@
             }
         }
 
+        /// <summary>Gets an <c>int</c> value from the .ini file.</summary>
+        /// <param name="section">The section that the option is in.</param>
+        /// <param name="option">The option to read.</param>
+        /// <param name="defaultValue">The default value (defaults to <c>0</c> if not specified).</param>
+        /// <returns>The value from the .ini file if it could be found, or else the default value.</returns>
         public int GetInt(string section, string option, int defaultValue = 0)
         {
             string stringValue = Get(section, option, defaultValue.ToString());
@@ -180,6 +205,11 @@
             return value;
         }
 
+        /// <summary>Gets a <c>long</c> value from the .ini file.</summary>
+        /// <param name="section">The section that the option is in.</param>
+        /// <param name="option">The option to read.</param>
+        /// <param name="defaultValue">The default value (defaults to <c>0</c> if not specified).</param>
+        /// <returns>The value from the .ini file if it could be found, or else the default value.</returns>
         public long GetLong(string section, string option, long defaultValue = 0)
         {
             string stringValue = Get(section, option, defaultValue.ToString());
@@ -192,6 +222,11 @@
             return value;
         }
 
+        /// <summary>Gets a <c>float</c> value from the .ini file.</summary>
+        /// <param name="section">The section that the option is in.</param>
+        /// <param name="option">The option to read.</param>
+        /// <param name="defaultValue">The default value (defaults to <c>0.0</c> if not specified).</param>
+        /// <returns>The value from the .ini file if it could be found, or else the default value.</returns>
         public float GetFloat(string section, string option, float defaultValue = 0)
         {
             string stringValue = Get(section, option, defaultValue.ToString());
@@ -204,6 +239,11 @@
             return value;
         }
 
+        /// <summary>Gets a <c>double</c> value from the .ini file.</summary>
+        /// <param name="section">The section that the option is in.</param>
+        /// <param name="option">The option to read.</param>
+        /// <param name="defaultValue">The default value (defaults to <c>0.0</c> if not specified).</param>
+        /// <returns>The value from the .ini file if it could be found, or else the default value.</returns>
         public double GetDouble(string section, string option, double defaultValue = 0)
         {
             string stringValue = Get(section, option, defaultValue.ToString());
@@ -216,6 +256,12 @@
             return value;
         }
 
+        /// <summary>Gets a <c>bool</c> value from the .ini file.</summary>
+        /// <param name="section">The section that the option is in.</param>
+        /// <param name="option">The option to read.</param>
+        /// <param name="defaultValue">The default value (defaults to <c>false</c> if not specified).</param>
+        /// <returns>The value from the .ini file if it could be found, or else the default value.</returns>
+        /// <remarks>When parsing a <c>bool</c> the following strings are recognized: true/false, yes/no, 1/0.</remarks>
         public bool GetBoolean(string section, string option, bool defaultValue = false)
         {
             string stringValue = Get(section, option, defaultValue.ToString()).Trim().ToLower();
@@ -233,6 +279,9 @@
             }
         }
 
+        /// <summary>Retrieves a list of items in the specified section.</summary>
+        /// <param name="section">The section for which to retrieve the items.</param>
+        /// <returns>An array of <see cref="System.Collections.Generic.KeyValuePair" /> containing the options and ther values.</returns>
         public KeyValuePair<string, string>[] Items(string section)
         {
             if (string.IsNullOrEmpty(section))
@@ -267,6 +316,11 @@
             }
         }
 
+        /// <summary>Sets a value in the .ini file.</summary>
+        /// <param name="section">The section which the option is in.</param>
+        /// <param name="option">The option whose value is to be set.</param>
+        /// <param name="value">The value.</param>
+        /// <returns><c>true</c> if the value was successfully set, <c>false</c> otherwise.</returns>
         public bool Set(string section, string option, object value)
         {
             if (string.IsNullOrEmpty(section))
@@ -288,6 +342,10 @@
             return result;
         }
 
+        /// <summary>Removes the specified option from the specified section.</summary>
+        /// <param name="section">The section which the option is in.</param>
+        /// <param name="option">The option to remove.</param>
+        /// <returns><c>true</c> if the option was successfully removed, <c>false</c> otherwise.</returns>
         public bool RemoveOption(string section, string option)
         {
             if (string.IsNullOrEmpty(section))
@@ -304,6 +362,9 @@
             return result;
         }
 
+        /// <summary>Removes the specified section.</summary>
+        /// <param name="section">The section to remove.</param>
+        /// <returns><c>true</c> if the section was successfully removed, <c>false</c> otherwise.</returns>
         public bool RemoveSection(string section)
         {
             if (string.IsNullOrEmpty(section))
